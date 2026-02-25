@@ -4,8 +4,10 @@ import scala.annotation.targetName
 
 case class Multiset[A](data: Map[A, Int] = Map.empty):
   override def toString: String =
-    (for e<-data yield (e._1.toString+",") * e._2)
-      .mkString("").dropRight(1)
+    this.data.flatMap{ case (element, count) =>
+      List.fill(count)(element.toString)
+    }.mkString(", ")
+  end toString
 
   def isEmpty: Boolean = data.isEmpty
 
