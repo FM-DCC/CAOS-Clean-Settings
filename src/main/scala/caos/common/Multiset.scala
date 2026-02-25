@@ -9,7 +9,9 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
     }.mkString(", ")
   end toString
 
-  def isEmpty: Boolean = data.isEmpty
+  def isEmpty: Boolean =
+    this.data.isEmpty
+  end isEmpty
 
   def contains(elem:A): Boolean = data.contains(elem)
 
