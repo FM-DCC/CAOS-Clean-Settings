@@ -2,9 +2,7 @@ package caos.common
 
 import scala.annotation.targetName
 
-case class Multiset[A](var data: Map[A,Int] = Map()):
-  //    protected var data: Map[A,Int] = Map()
-
+case class Multiset[A](data: Map[A, Int] = Map.empty):
   override def toString: String =
     (for e<-data yield (e._1.toString+",") * e._2)
       .mkString("").dropRight(1)
