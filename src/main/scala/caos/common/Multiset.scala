@@ -13,7 +13,9 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
     this.data.isEmpty
   end isEmpty
 
-  def contains(elem:A): Boolean = data.contains(elem)
+  def contains(element: A): Boolean =
+    this.data.contains(element)
+  end contains
 
   @targetName("add")
   def +(act:A): Multiset[A] =
