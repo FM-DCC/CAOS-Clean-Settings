@@ -18,8 +18,10 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
   end contains
 
   @targetName("add")
-  def +(act:A): Multiset[A] =
-    Multiset(data + (act -> (data.getOrElse(act,0)+1)))
+  def +(element: A): Multiset[A] =
+    val updatedCount = this.data.getOrElse(element, 0) + 1
+    Multiset(this.data + (element -> updatedCount))
+  end +
 
   @targetName("union")
   def ++(other: Multiset[A]): Multiset[A] =
