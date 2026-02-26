@@ -23,15 +23,16 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
     Multiset(this.data + (element -> updatedCount))
   end +
 
-  @targetName("union")
-  def ++(other: Multiset[A]): Multiset[A] =
+  @targetName("concat")
+  def ++(multisetB: Multiset[A]): Multiset[A] =
     Multiset(
-      data.filter( (pair:(A,Int)) => !other.contains(pair._1) )
-        ++
-        (for (a,nr)<-other.data yield data.get(a) match {
-    case Some(nr2) => a -> (nr+nr2)
-    case None => a->nr
-  }))
+      (this.data.keySet ++ multisetB.data.keySet).map( element =>
+        val countA = this.data.getOrElse(element, 0)
+        val countB = multisetB.data.getOrElse(element, 0)
+        element -> (countA + countB)
+      ).toMap
+    )
+  end ++
 
   @targetName("exclude")
   def --(other: Multiset[A]): Multiset[A] =
