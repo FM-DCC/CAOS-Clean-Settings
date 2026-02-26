@@ -34,12 +34,6 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
     )
   end ++
 
-  @targetName("exclude")
-  def --(other: Multiset[A]): Multiset[A] =
-    Multiset((for at <- data if !other.data.contains(at._1)
-      yield at) ++ // all t1 that is not in t2
-      (for at <- data if other.data.contains(at._1) && other.data(at._1)<at._2
-        yield at._1->(at._2-other.data(at._1)))) // all `this` that is partially dropped by `other`
 
   @targetName("delete")
   def -(act:A): Multiset[A] =
@@ -51,6 +45,16 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
 
   def included(other: Multiset[A]): Boolean =
     data.forall(a1 => other.data.get(a1._1).exists(_>=a1._2))
+  @targetName("exclude")
+  def --(multisetB: Multiset[A]): Multiset[A] =
+    val updatedDataA = this.data.map{ case (elementA, countA) =>
+      val updatedCountA = countA - multisetB.data.getOrElse(elementA, 0)
+      (elementA, updatedCountA)
+    }.filter{ case (_, updatedCountA) =>
+      updatedCountA > 0
+    }
+    Multiset(updatedDataA)
+  end --
 
 
 object Multiset:
