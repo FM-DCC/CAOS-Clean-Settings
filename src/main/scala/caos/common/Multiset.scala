@@ -63,6 +63,7 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
 end Multiset
 
 object Multiset:
-  //    def apply[A](m:Map[A,Int]) = new Multiset[A]:
-  //      data = m
-  def apply[A]() = new Multiset[A](Map())
+  def apply[A](): Multiset[A] =
+    new Multiset[A](Map.empty)
+  end apply
+end Multiset
