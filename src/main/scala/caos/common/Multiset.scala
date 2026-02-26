@@ -34,14 +34,15 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
     )
   end ++
 
-
-  @targetName("delete")
-  def -(act:A): Multiset[A] =
-    data.get(act) match
-      case Some(v) if v>1 =>
-        Multiset(data + (act -> (v-1)))
+  @targetName("sub")
+  def -(element: A): Multiset[A] =
+    this.data.get(element) match
+      case Some(count) if count > 1 =>
+        val updatedCount = count - 1
+        Multiset(this.data + (element -> updatedCount))
       case _ =>
-        Multiset(data - act)
+        Multiset(this.data - element)
+  end -
 
   def included(other: Multiset[A]): Boolean =
     data.forall(a1 => other.data.get(a1._1).exists(_>=a1._2))
