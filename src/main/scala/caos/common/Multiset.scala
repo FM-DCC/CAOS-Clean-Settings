@@ -44,8 +44,6 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
         Multiset(this.data - element)
   end -
 
-  def included(other: Multiset[A]): Boolean =
-    data.forall(a1 => other.data.get(a1._1).exists(_>=a1._2))
   @targetName("exclude")
   def --(multisetB: Multiset[A]): Multiset[A] =
     val updatedDataA = this.data.map{ case (elementA, countA) =>
@@ -57,6 +55,12 @@ case class Multiset[A](data: Map[A, Int] = Map.empty):
     Multiset(updatedDataA)
   end --
 
+  def included(multisetB: Multiset[A]): Boolean =
+    this.data.forall{ case (elementA, countA) =>
+      multisetB.data.getOrElse(elementA, 0) >= countA
+    }
+  end included
+end Multiset
 
 object Multiset:
   //    def apply[A](m:Map[A,Int]) = new Multiset[A]:
