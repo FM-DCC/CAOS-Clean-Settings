@@ -1,6 +1,7 @@
 package caos.frontend
 
 import caos.frontend.Configurator.Example
+import caos.frontend.setting.Setting
 import caos.frontend.widgets.Widget.Helper
 import caos.frontend.widgets.WidgetInfo
 import caos.frontend.widgets.WidgetInfo.*
@@ -28,6 +29,8 @@ trait Configurator[Stx]:
   val parser: String=>Stx
   /** Sequence of examples */
   val examples: Iterable[Example] // name -> value
+  /** Setting widget, on the left hand side of the screen */
+  val setting: Option[Setting] = None
   /** Main widgets, on the right hand side of the screen */
   val widgets: Iterable[(String,WidgetInfo[Stx])]
   /** Secondary widgets, below the code */
@@ -221,10 +224,49 @@ object Configurator:
   /** Helper to build examples as `examples = List("name" -> "code")` */
   implicit def toExample(nameCode:(String,String)): Example =
     Example(nameCode._2,nameCode._1,"")
+  end toExample
+
   /** Helper to build examples as `examples = List("name" -> "code" -> "description")` */
   implicit def toExampleDesc(nameCodeDesc:((String,String),String)): Example =
     Example(nameCodeDesc._1._2,nameCodeDesc._1._1,nameCodeDesc._2)
-  implicit def toDocumentation(docs:List[((String,String),String)]): Documentation =
-    Documentation().add(docs)
 
+  /**
+   * Helper method to build an optional Setting without the explicit reference to type wrapper `Some`
+   *
+   * @param setting setting to be wrapped by `Some`
+   * @return the type wrapped setting
+   */
+  implicit def toSetting(setting: Setting): Option[Setting] =
+    Some(setting)
+  end toSetting
 
+  /**
+   * Helper method to build a named Setting (to be created)
+   *
+   * @param name the name for the Setting (to be created)
+   * @return the named Setting
+   */
+  implicit def toSetting(name: String): Setting =
+    Setting(name)
+  end toSetting
+
+  /**
+   * Helper method to build a named Setting (already created)
+   *
+   * @param nameSetting a tuple with the name for the Setting and the setting itself
+   * @return the named Setting
+   */
+  implicit def toNamedSetting(nameSetting: (String, Setting)): Setting =
+    val (name, setting) = nameSetting
+    Setting(name, setting.children, setting.checked, setting.options)
+  end toNamedSetting
+
+/**
+ * Helper method to build the documentation
+ *
+ * @param docs the documentation itself
+ * @return the documentation widget
+ */
+implicit def toDocumentation(docs: List[((String, String), String)]): Documentation =
+  Documentation().add(docs)
+end toDocumentation
